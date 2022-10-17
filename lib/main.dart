@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:productivity_timer/settings.dart';
@@ -49,6 +51,7 @@ class MyApp extends StatelessWidget {
         child: Text('Settings'),
       ),
     );
+    BuildContext ctx = context;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'My Work Timer',
@@ -65,7 +68,8 @@ class MyApp extends StatelessWidget {
               itemBuilder: (context) => menuItems.toList(),
               onSelected: (s) {
                 if (s == 'Settings') {
-                  goToSettings(context);
+                  Navigator.of(ctx).push(MaterialPageRoute(
+                      builder: (context) => SettingsScreen()));
                 }
               },
             ),
@@ -73,9 +77,13 @@ class MyApp extends StatelessWidget {
         ),
         body: LayoutBuilder(builder: (context, constraints) {
           final double availableWidth = constraints.maxWidth;
-
+          final double availableHeight = constraints.maxHeight;
           return Column(
             children: [
+              ElevatedButton(
+                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => SettingsScreen())),
+                  child: Text("Settings")),
               Row(
                 children: [
                   Padding(
@@ -122,11 +130,15 @@ class MyApp extends StatelessWidget {
                         ? TimerModel('00:00', 1)
                         : snapshot.data as TimerModel;
                     return CircularPercentIndicator(
-                      radius: availableWidth / 2,
+                      radius: min(availableHeight / 1.2, availableWidth) / 2.2,
                       lineWidth: 10.0,
                       percent: timer.percent,
                       center: Text(timer.time,
-                          style: Theme.of(context).textTheme.displayMedium),
+                          style: (availableWidth > 350)
+                              ? Theme.of(context).textTheme.displayLarge
+                              : (availableWidth > 150)
+                                  ? Theme.of(context).textTheme.displayMedium
+                                  : Theme.of(context).textTheme.displaySmall),
                       progressColor: Color.fromARGB(255, 32, 138, 186),
                     );
                   },
@@ -168,8 +180,8 @@ class MyApp extends StatelessWidget {
 }
 
 void goToSettings(BuildContext context) {
-  Navigator.push(
-      context, MaterialPageRoute(builder: (context) => SettingsScreen()));
+  Navigator.of(context)
+      .push(MaterialPageRoute(builder: (context) => SettingsScreen()));
 }
 
 void emptyMethod() {}
