@@ -64,15 +64,17 @@ class MyApp extends StatelessWidget {
             child: Text('Work Timer'),
           ),
           actions: [
-            PopupMenuButton<String>(
-              itemBuilder: (context) => menuItems.toList(),
-              onSelected: (s) {
-                if (s == 'Settings') {
-                  Navigator.of(ctx).push(MaterialPageRoute(
-                      builder: (context) => SettingsScreen()));
-                }
-              },
-            ),
+            Builder(builder: (context) {
+              return PopupMenuButton<String>(
+                itemBuilder: (context) => menuItems.toList(),
+                onSelected: (s) {
+                  if (s == 'Settings') {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => SettingsScreen()));
+                  }
+                },
+              );
+            }),
           ],
         ),
         body: LayoutBuilder(builder: (context, constraints) {
@@ -80,10 +82,6 @@ class MyApp extends StatelessWidget {
           final double availableHeight = constraints.maxHeight;
           return Column(
             children: [
-              ElevatedButton(
-                  onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => SettingsScreen())),
-                  child: Text("Settings")),
               Row(
                 children: [
                   Padding(
